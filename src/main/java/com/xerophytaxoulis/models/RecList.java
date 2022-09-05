@@ -10,4 +10,11 @@ sealed interface RecList<T> {
             case Cons<T> (T head, RecList<T> ignored) -> head;
         };
     }
+
+    static<T> RecList<T> tail(RecList<T> list) {
+        return switch (list) {
+            case Nil<T> () -> new Nil<>();
+            case Cons<T> (T ignored, RecList<T> tail) -> tail;
+        };
+    }
 }

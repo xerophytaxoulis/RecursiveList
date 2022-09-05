@@ -28,4 +28,19 @@ class RecListToolsTest {
                 () -> RecList.head(new RecList.Nil<>()));
         assertEquals("head of empty list", thrown.getMessage());
    }
+
+   @Test
+    void tailOfNoneEmptyList() {
+       RecList<Integer> expected = new RecList.Cons<>(2,
+               new RecList.Nil<>());
+       RecList<Integer> result = RecList.tail(givenList);
+
+       assertEquals(expected, result);
+   }
+
+   @Test
+    void tailOfEmptyList() {
+        RecList<Integer> emptyList = new RecList.Nil<>();
+        assertEquals(emptyList, RecList.tail(emptyList));
+   }
 }
