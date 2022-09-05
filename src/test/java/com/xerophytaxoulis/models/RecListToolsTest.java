@@ -61,6 +61,57 @@ class RecListToolsTest {
         assertEquals(expected, result);
    }
 
-   // missing: append, add, remove, length
+   @Test
+    void appendList() {
+       RecList<Integer> expected =
+               new RecList.Cons<>(1,
+                   new RecList.Cons<>(2,
+                           new RecList.Cons<>(1,
+                                   new RecList.Cons<>(2,
+                                           new RecList.Nil<>()))));
 
+       RecList<Integer> result = RecList.append(givenList, givenList);
+
+       assertEquals(expected, result);
+       assertEquals(givenList, RecList.append(givenList, new RecList.Nil<>()));
+   }
+
+    @Test
+    void addElement() {
+        RecList<Integer> expected =
+                new RecList.Cons<>(1,
+                        new RecList.Cons<>(2,
+                                new RecList.Cons<>(3,
+                                            new RecList.Nil<>())));
+
+        RecList<Integer> result = RecList.add(givenList, 3);
+
+        assertEquals(expected, result);
+   }
+
+   @Test
+    void removeElementFromList() {
+       RecList<Integer> expected = new RecList.Cons<>(2, new RecList.Nil<>());
+       // find element to remove
+       RecList<Integer> resultWithRemovedElem = RecList.remove(givenList, 1);
+       // find no element to remove
+       RecList<Integer> resultWithoutRemovedElem =  RecList.remove(givenList, 3);
+
+       assertEquals(expected, resultWithRemovedElem);
+       assertEquals(givenList, resultWithoutRemovedElem);
+   }
+
+   @Test
+    void lengthOfList() {
+       assertEquals(2, RecList.length(givenList));
+       assertEquals(0, RecList.length(new RecList.Nil<Integer>()));
+   }
+
+   @Test
+    void listContainsElement() {
+        assertTrue(RecList.contains(givenList, 2));
+        assertFalse(RecList.contains(givenList, 3));
+        // empty list doesn't contain anything
+        assertFalse(RecList.contains(new RecList.Nil<Integer>(), 1));
+   }
 }
