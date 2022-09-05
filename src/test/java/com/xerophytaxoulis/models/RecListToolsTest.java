@@ -43,4 +43,24 @@ class RecListToolsTest {
         RecList<Integer> emptyList = new RecList.Nil<>();
         assertEquals(emptyList, RecList.tail(emptyList));
    }
+
+   @Test
+    void reverseEmptyList() {
+       RecList<Integer> emptyList = new RecList.Nil<>();
+       assertEquals(emptyList, RecList.reverse(emptyList));
+   }
+
+    @Test
+    void reverseNoneEmptyList() {
+        RecList<Integer> expected = new RecList.Cons<>(2,
+                new RecList.Cons<>(1,
+                        new RecList.Nil<>()));
+
+        RecList<Integer> result = RecList.reverse(givenList);
+
+        assertEquals(expected, result);
+   }
+
+   // missing: append, add, remove, length
+
 }

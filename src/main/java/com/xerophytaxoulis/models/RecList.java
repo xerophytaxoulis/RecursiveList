@@ -11,10 +11,22 @@ sealed interface RecList<T> {
         };
     }
 
-    static<T> RecList<T> tail(RecList<T> list) {
-        return switch (list) {
+    static<T> RecList<T> tail(RecList<T> targetList) {
+        return switch (targetList) {
             case Nil<T> () -> new Nil<>();
             case Cons<T> (T ignored, RecList<T> tail) -> tail;
         };
+    }
+
+    static<T> RecList<T> reverse(RecList<T> targetList) {
+       return rev(targetList, new Nil<T>());
+    }
+
+    private static<T> RecList<T> rev(RecList<T> targetList, RecList<T> auxiliaryList) {
+       return switch (targetList) {
+           case Nil ignored -> auxiliaryList;
+           case Cons<T> (T head, RecList<T> tail)
+               -> rev(tail, new Cons<>(head, auxiliaryList));
+       };
     }
 }
