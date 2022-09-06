@@ -42,13 +42,13 @@ sealed interface RecList<T> {
         return append(targetList, new Cons<>(toAdd, new Nil<T>()));
     }
 
-    static<T> RecList<T> remove(RecList<T> targetList, T toRemove) {
+    static<T> RecList<T> removeAll(RecList<T> targetList, T toRemove) {
         return switch (targetList) {
             case Nil<T>() -> new Nil<T>();
             case Cons<T> (T head, RecList<T> tail) ->
                 head.equals(toRemove)
-                        ? remove(tail, toRemove)
-                        : new Cons<T>(head, remove(tail, toRemove));
+                        ? removeAll(tail, toRemove)
+                        : new Cons<T>(head, removeAll(tail, toRemove));
         };
     }
 
@@ -65,7 +65,55 @@ sealed interface RecList<T> {
         return switch (targetList) {
             case Nil ignored -> false;
             case Cons<T> (T head, RecList<T> tail) ->
-                head.equals(elem) || contains(tail, elem);
+                head.equals(elem) ? true : contains(tail, elem);
         };
     }
+
+    static<T> RecList<T> sublist(RecList<T> targetList, int fromIndex, int toIndex) {
+        subListRangeCheck(fromIndex, toIndex, length(targetList));
+        if (fromIndex == toIndex) {
+            return new Nil<>();
+        } else {
+            return subl(targetList, fromIndex, toIndex, 0);
+        }
+    }
+
+    private static<T> RecList<T> subl(RecList<T> list, int fromIdx, int toIdx, int currIdx) {
+        return switch (list) {
+            case Nil ignored -> new Nil<>();
+            case Cons<T> (T head, RecList<T> tail) -> {
+                if (toIdx <= currIdx) {
+                    yield new Nil<>();
+                } else if (fromIdx <= currIdx && currIdx < toIdx) {
+                    yield new Cons<>(head, subl(tail, fromIdx, toIdx, ++currIdx));
+                } else {
+                    yield subl(tail, fromIdx, toIdx, ++currIdx);
+                }
+            }
+        };
+    }
+
+    private static void subListRangeCheck(int fromIndex, int toIndex, int length) {
+        if (fromIndex < 0) {
+            throw new IndexOutOfBoundsException("fromIndex " + fromIndex);
+        }
+        if (toIndex > length) {
+            throw new IndexOutOfBoundsException("toIndex " + toIndex);
+        }
+        if (fromIndex > toIndex) {
+            throw new IllegalArgumentException("fromIndex(" + fromIndex +
+                    ") > toIndex(" + toIndex + ")");
+        }
+    }
+
+    static <T> RecList<T> remove(RecList<T> targetList, T toRemove) {
+        return switch (targetList) {
+            case Nil ignored -> targetList;
+            case Cons<T> (T head, RecList<T> tail)
+                -> head.equals(toRemove)
+                    ? tail
+                    : new Cons<T>(head, remove(tail, toRemove));
+        };
+    }
+    // removeFromSublist, indexOf
 }
