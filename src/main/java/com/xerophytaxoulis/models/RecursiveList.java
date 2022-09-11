@@ -114,6 +114,7 @@ public class RecursiveList<T> extends AbstractSequentialList<T> {
         public void add(T t) {
             RecList.addAt(RecursiveList.this.list, t, cursor - 1);
             prevSlice = new RecList.Cons<>(t, prevSlice);
+            cursor++;
         }
     }
 
