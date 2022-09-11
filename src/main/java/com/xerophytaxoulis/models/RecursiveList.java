@@ -7,7 +7,7 @@ public class RecursiveList<T> extends AbstractSequentialList<T> {
     private RecList<T> list;
 
     public RecursiveList() {
-        this.list = new RecList.Nil<T>();
+        this.list = new RecList.Nil<>();
     }
 
     public RecursiveList(RecList<T> list) {
@@ -47,21 +47,30 @@ public class RecursiveList<T> extends AbstractSequentialList<T> {
     }
 
     private class ListItr implements ListIterator<T> {
-
         private int cursor;
+        private RecList<T> nextSlice;
+        private RecList<T> prevSlice;
 
         ListItr(int index) {
             this.cursor = index;
+            this.nextSlice = RecList.sublist(
+                    RecursiveList.this.list, index, RecursiveList.this.size());
+            this.prevSlice = RecList.reverse(
+                    RecList.sublist(RecursiveList.this.list, 0, index));
         }
 
         @Override
         public boolean hasNext() {
-            return cursor < RecursiveList.this.size() - 1;
+            return cursor < RecursiveList.this.size();
         }
 
         @Override
         public T next() {
-            return null;
+            cursor++;
+            T head = RecList.head(nextSlice);
+            prevSlice = new RecList.Cons<>(head, prevSlice);
+            nextSlice = RecList.tail(nextSlice);
+            return head;
         }
 
         @Override
@@ -71,7 +80,11 @@ public class RecursiveList<T> extends AbstractSequentialList<T> {
 
         @Override
         public T previous() {
-            return null;
+            cursor--;
+            T head = RecList.head(prevSlice);
+            prevSlice = RecList.tail(prevSlice);
+            nextSlice = new RecList.Cons<>(head, nextSlice);
+            return head;
         }
 
         @Override
@@ -86,17 +99,38 @@ public class RecursiveList<T> extends AbstractSequentialList<T> {
 
         @Override
         public void remove() {
-
+            cursor--;
+            RecList.removeAt(RecursiveList.this.list, cursor);
+            prevSlice = RecList.tail(prevSlice);
         }
 
         @Override
         public void set(T t) {
-
+            RecList.setAt(RecursiveList.this.list, t, cursor - 1);
+            prevSlice = new RecList.Cons<>(t, RecList.tail(prevSlice));
         }
 
         @Override
         public void add(T t) {
-
+            RecList.addAt(RecursiveList.this.list, t, cursor - 1);
+            prevSlice = new RecList.Cons<>(t, prevSlice);
         }
+    }
+
+    @Override
+    public String toString() {
+        String asString = toStr(list);
+        if (!asString.isEmpty()) {
+            asString = asString.substring(0, asString.length() - 1);
+        }
+        return "[" + asString + "]";
+    }
+
+    private static <T> String toStr(RecList<T> targetList) {
+        return  switch (targetList) {
+            case RecList.Nil ignored -> "";
+            case RecList.Cons<T>(T head,RecList<T> tail)
+                    -> head.toString() + "," + toStr(tail);
+        };
     }
 }

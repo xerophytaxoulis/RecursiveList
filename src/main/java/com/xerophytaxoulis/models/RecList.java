@@ -1,6 +1,6 @@
 package com.xerophytaxoulis.models;
 
-sealed interface RecList<T> {
+public sealed interface RecList<T> {
     record Nil<T>() implements  RecList<T> {}
     record Cons<T> (T value, RecList<T> tail) implements RecList<T> {}
 
@@ -115,5 +115,47 @@ sealed interface RecList<T> {
                     : new Cons<T>(head, remove(tail, toRemove));
         };
     }
-    // removeFromSublist, indexOf
+
+    static <T> RecList<T> removeAt(RecList<T> targetList, int index) {
+        return remAtHelper(targetList, index, 0);
+    }
+
+    private static <T> RecList<T> remAtHelper(RecList<T> targetList, int idx, int runningIdx) {
+        return switch (targetList) {
+            case Nil ignored -> throw new IndexOutOfBoundsException();
+            case Cons<T> (T head, RecList<T> tail) ->
+               idx == runningIdx
+                       ? tail
+                       : new Cons<>(head, remAtHelper(tail, idx, ++runningIdx));
+        };
+    }
+
+    static <T> RecList<T> setAt(RecList<T> targetList, T elem, int index) {
+       return setAtHelper(targetList, elem, index, 0);
+    }
+
+    private static <T> RecList<T> setAtHelper(RecList<T> targetList, T elem, int idx, int runningIdx) {
+        return switch (targetList) {
+            case Nil ignored -> throw new IndexOutOfBoundsException();
+            case Cons<T> (T head, RecList<T> tail) ->
+                    idx == runningIdx
+                            ? new Cons<>(elem, tail)
+                            : new Cons<>(head, setAtHelper(tail, elem, idx, ++runningIdx));
+        };
+    }
+
+    static <T> RecList<T> addAt(RecList<T> targetList, T elem, int index) {
+       return addAtHelper(targetList, elem, index, 0);
+    }
+
+
+    private static <T> RecList<T> addAtHelper(RecList<T> targetList, T elem, int idx, int runningIdx) {
+        return switch (targetList) {
+            case Nil ignored -> throw new IndexOutOfBoundsException();
+            case Cons<T> (T head, RecList<T> tail) ->
+                    idx == runningIdx
+                            ? new Cons<>(elem, targetList)
+                            : new Cons<>(head, addAtHelper(tail, elem, idx, ++runningIdx));
+        };
+    }
 }

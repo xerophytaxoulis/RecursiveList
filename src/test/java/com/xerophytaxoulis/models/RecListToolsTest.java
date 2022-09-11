@@ -192,4 +192,44 @@ class RecListToolsTest {
         RecList<Integer> result = RecList.remove(new RecList.Nil<Integer>(), 1);
         assertEquals(expected, result);
     }
+
+    @Test
+    void removeAtFromEmptyList() {
+        assertThrows(IndexOutOfBoundsException.class,
+                () -> RecList.removeAt(new RecList.Nil<>(), 3));
+    }
+
+    @Test
+    void removeAtFromNoneEmptyList() {
+        RecList<Integer> expectedRemoveFirst = new RecList.Cons<>(
+                2, new RecList.Nil<>());
+        RecList<Integer> expectedRemoveLast = new RecList.Cons<>(
+                1, new RecList.Nil<>());
+
+        assertEquals(expectedRemoveFirst, RecList.removeAt(givenList, 0));
+        assertEquals(expectedRemoveLast, RecList.removeAt(givenList, 1));
+        assertThrows(IndexOutOfBoundsException.class,
+                () -> RecList.removeAt(givenList, 3));
+    }
+
+    @Test
+    void setAtEmptyList() {
+        assertThrows(IndexOutOfBoundsException.class,
+                () -> RecList.removeAt(new RecList.Nil<>(), 3));
+    }
+
+    @Test
+    void setAtNoneEmptyList() {
+        RecList<Integer> expected = new RecList.Cons<>(1,
+                                        new RecList.Cons<>(3,
+                                                new RecList.Nil<>()));
+        RecList<Integer> result = RecList.setAt(givenList, 3, 1);
+        assertEquals(expected, result);
+    }
+
+    @Test
+    void addAtEmptyList() {
+        assertThrows(IndexOutOfBoundsException.class,
+                () -> RecList.removeAt(new RecList.Nil<>(), 3));
+    }
 }
