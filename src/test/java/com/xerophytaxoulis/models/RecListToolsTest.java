@@ -232,4 +232,23 @@ class RecListToolsTest {
         assertThrows(IndexOutOfBoundsException.class,
                 () -> RecList.removeAt(new RecList.Nil<>(), 3));
     }
+
+    @Test
+    void noneEqualListEquality() {
+        RecList<Integer> notEqualToGivenList = new RecList.Cons<>(1,
+                        new RecList.Nil<>());
+        assertFalse(RecList.equals(givenList,notEqualToGivenList));
+        assertFalse(RecList.equals(givenList, RecList.setAt(givenList, 3, 1)));
+    }
+
+    @Test
+    void equalListEquality() {
+
+        RecList<Integer> equalToGivenList = new RecList.Cons<>(1,
+                new RecList.Cons<>(2,
+                        new RecList.Nil<>()));
+
+        assertTrue(RecList.equals(givenList, equalToGivenList));
+        assertTrue(RecList.equals(new RecList.Nil<>(), new RecList.Nil<>()));
+    }
 }

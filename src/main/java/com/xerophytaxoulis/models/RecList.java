@@ -158,4 +158,14 @@ public sealed interface RecList<T> {
                             : new Cons<>(head, addAtHelper(tail, elem, idx, ++runningIdx));
         };
     }
+
+    static <T> boolean equals(RecList<T> list1, RecList<T> list2) {
+        Tuple<T> tuple = new Tuple<>(list1, list2);
+        return switch (tuple) {
+            case Tuple<T> (Cons<T>(T head1, RecList<T> tail1), Cons<T>(T head2, RecList<T> tail2))
+                -> head1.equals(head2) && equals(tail1, tail2);
+            case Tuple<T> (Nil<T>(), Nil<T>()) -> true;
+            case default -> false;
+        };
+    }
 }

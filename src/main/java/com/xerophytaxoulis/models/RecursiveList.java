@@ -38,7 +38,8 @@ public class RecursiveList<T> extends AbstractSequentialList<T> {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         RecursiveList<?> that = (RecursiveList<?>) o;
-        return Objects.equals(list, that.list);
+        if (!(this.size() == that.size())) return false;
+        return RecList.equals(this.list, (RecList<T>) that.list);
     }
 
     @Override
